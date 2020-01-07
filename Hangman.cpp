@@ -1,10 +1,5 @@
 #include "Hangman.h"
 
-//Defining static vectors
-std::vector<std::string> HangmanWord::easyWords;
-std::vector<std::string> HangmanWord::mediumWords;
-std::vector<std::string> HangmanWord::hardWords;
-
 /*
 Description:   Constructor for the Hangman class
 */
@@ -63,6 +58,10 @@ void Hangman::displayDifficultyMenu()
          << "3) Hard\n\t(Much harder, longer words, " << HARD << " misses)\n\n";
 
       std::cin >> choice;
+
+      //Clear error state and clear keyboard buffer in the event of junk input
+      std::cin.clear();
+      std::cin.ignore(INT_MAX, '\n');
    }
 
    //Assign difficulty and misses left based on the user's choice
@@ -132,6 +131,8 @@ void Hangman::displayGameInfo()
 Description:   Checks to see if the given character is a character in the target word.
 Input:         character:
                The character that will be searched for in the target word
+return:        Returns false if the character was not found in the target words and true
+               if the character was found in the target word.
 */
 bool Hangman::isCharacterInTargetWord(char character)
 {
@@ -194,15 +195,12 @@ char Hangman::getInput()
    //Set the user's input to lowercase so that the game is not case sensitive
    input = stringToLower(input);
 
-   //If the user typed more than one character
-   if (input.length() != 1)
+   //If the user typed more than one character and they guessed the target word correctly, return -1
+   if (input.length() != 1 && input == targetWord)
    {
-      //If the user guessed the target word correctly, return -1
-      if (input == targetWord)
-      {
-         return -1;
-      }
+      return -1;
    }
+   //If the user guessed only one character that was in the target word, return that character
    else if (isCharacterInTargetWord(input[0]))
    {
       return input[0];
@@ -220,7 +218,6 @@ void Hangman::resetGame()
    //Free the memory for userGuess from last game
    delete [] userGuess;
 } //end function resetGame
-
 
 /*
 Description:   Changes the given string to a string of all lowercase characters.
@@ -246,7 +243,7 @@ Input:         gameLoopControl:
 */
 void Hangman::displayPlayAgainMenu(bool &gameLoopControl)
 {
-   char playAgain;
+   char playAgain;   //The user's choice
 
    //Prompt user if they want to play again and get the input
    std::cout << "Play again? (y/n): ";
@@ -262,9 +259,14 @@ void Hangman::displayPlayAgainMenu(bool &gameLoopControl)
    //Validate the user's input and re-prompt
    while (playAgain != 'y' && playAgain != 'n')
    {
-      std::cout << "Invalid option.\n";
-      std::cout << "Play again? (y/n): ";
+      std::cout << "Invalid option.\n"
+                << "Play again? (y/n): ";
+
       std::cin >> playAgain;
+
+      //Clear error state and clear keyboard buffer in the event of junk input
+      std::cin.clear();
+      std::cin.ignore(INT_MAX, '\n');
    }
 
    //If the user wants to play again
@@ -283,6 +285,10 @@ void Hangman::displayPlayAgainMenu(bool &gameLoopControl)
    }
    else
    {
+      //Call reset game to free memory allocated for user choice array
+      resetGame();
+
+      //Display exit message and exit
       std::cout << "Goodbye!\n";
       exit(EXIT_SUCCESS);
    }
@@ -319,13 +325,13 @@ void Hangman::runLossProcedure()
 
 /*
 Description:   Display's the Hangman board as well as the portion of the target word that the
-               user has guessed.
+               user has guessed. Also handles the main game loop/
 */
 void Hangman::display()
 {
    bool running = true; //Game loop control variable
 
-   //Display a tutorial the first game
+   //Display a tutorial before the first game
    displayTutorial();
 
    //Display initial difficulty menu

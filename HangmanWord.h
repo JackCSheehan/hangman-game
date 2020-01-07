@@ -2,7 +2,6 @@
 #define HANGMAN_WORD_h
 
 #include <string>
-#include <iostream>
 #include <vector>
 #include <fstream>
 #include <stdlib.h>
@@ -37,10 +36,16 @@ private:
 public:
    HangmanWord(Difficulty);
 
-   //Getter
+   //Getters
    std::string getWord() const { return word;  }
+   std::vector<std::string> getEasyWords() const { return easyWords; }
+   std::vector<std::string> getMediumWords() const { return mediumWords; }
+   std::vector<std::string> getHardWords() const { return hardWords; }
+   std::string getEasyWordsFilePath() const { return EASY_WORDS_FILE_PATH; }
+   std::string getMediumWordsFilePath() const { return MEDIUM_WORDS_FILE_PATH; }
+   std::string getHardWordsFilePath() const { return HARD_WORDS_FILE_PATH; }
 
-   //Setter
+   //Setters
    void setWord(std::string w) { word = w; }
 
 };

@@ -1,5 +1,10 @@
 #include "HangmanWord.h"
 
+//Defining static vectors
+std::vector<std::string> HangmanWord::easyWords;
+std::vector<std::string> HangmanWord::mediumWords;
+std::vector<std::string> HangmanWord::hardWords;
+
 /*
 Description:   The default constructor for the HangmanWord class
 */
