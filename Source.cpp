@@ -1,5 +1,3 @@
-#include <iostream>
-#include <iomanip>
 #include "Hangman.h"
 
 int main()
@@ -9,4 +7,4 @@ int main()
    h.display();
 
    return 0;
-} //end function main
+}
